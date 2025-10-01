@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "CF6iBvLf74S6kK8IEOFGiVThIxftuxe8bLH7fmOOdqk=",
+  "Source": "dockers_api",
+  "BasePath": "_content/dockers_api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
