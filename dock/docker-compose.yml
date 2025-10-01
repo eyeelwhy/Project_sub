@@ -1,0 +1,57 @@
+version: "3.8"
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: Asii2006
+      MYSQL_DATABASE: docker_sh
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pAsii2006"]
+      timeout: 20s
+      retries: 10
+      start_period: 30s
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: aspnet-api
+    ports:
+      - "3000:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=server=db;port=3306;database=docker_sh;uid=root;password=Asii2006;
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: vue-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - app-network
